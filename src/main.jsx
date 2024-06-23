@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Product from './Pages/Product.jsx'
 import NotFound from './Pages/NotFound.jsx'
 import ProductDetail from './Pages/ProductDetail.jsx'
+import Category from './Pages/Category.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -14,6 +15,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path='/' element={<App />} >
           <Route index element={<Product />} />
           <Route path=':id' element={<ProductDetail />} />
+          <Route path='category' element={<Category />} />
           <Route path='*' element={<NotFound />} />
         </Route>
       </Routes>
