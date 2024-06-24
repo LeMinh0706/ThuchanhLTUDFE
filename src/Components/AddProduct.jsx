@@ -1,36 +1,33 @@
 import React, { useEffect, useState } from 'react'
 import { getAllCategories } from '../Service/CategoryService'
+import { addProduct } from '../Service/ProductService'
 
-const AddProduct = () => {
+const AddProduct = ({ getAll }) => {
     const [name, setName] = useState('')
     const [des, setDes] = useState('')
-    const [price, setPrice] = useState('')
+    const [price, setPrice] = useState(0)
     const [img, setImg] = useState([])
     const [category, setCategory] = useState([])
-    const [cate, setCate] = useState()
+    const [cate, setCate] = useState(1)
 
     useEffect(() => {
         getAllCate()
     }, [])
 
-    // console.log(name);
-    // console.log(des);
-    // console.log(price);
-    // console.log(img);
     const getAllCate = async () => {
         try {
             const res = await getAllCategories()
             console.log(res);
             setCategory(res.data)
+            getAll()
         } catch (error) {
             console.log(error);
         }
     }
 
     const handleCateChange = (e) => {
-        setCate(e.target.value)
+        setCate(Number(e.target.value))
     }
-
     const handleNameChange = (e) => {
         setName(e.target.value)
     }
@@ -45,14 +42,24 @@ const AddProduct = () => {
     }
     const handleSubmit = async () => {
         try {
-            alert(name + '-' + des + '-' + price + '-' + cate)
+            const res = await addProduct(name, price, des, cate, img)
+            console.log(res);
+            getAll()
+            window.location.reload()
+            setCate('')
+            setImg([])
+            setName('')
+            setPrice(0)
+            setDes('')
         } catch (error) {
             console.log(error);
         }
     }
 
+    console.log(img);
     return (
         <div className='w-1/3 flex flex-col border-2 p-3 rounded-lg bg-white drop-shadow-lg gap-4 '>
+
             <h2 className='text-lg font-medium text-center text-gray-400'>ADD PRODUCT</h2>
             <label className='text-gray-500 font-medium' htmlFor="name">Name:</label>
             <input className='p-3 border-2 rounded-lg' id='name' type="text" onChange={handleNameChange} value={name} />
@@ -61,17 +68,23 @@ const AddProduct = () => {
             <label className='text-gray-500 font-medium' htmlFor="des">Description:</label>
             <input className='p-3 border-2 rounded-lg' id='des' type="text" onChange={handleDesChange} value={des} />
             <label className='text-gray-500 font-medium' htmlFor="file">Image:</label>
-            <input className='p-3 border-2 rounded-lg' id='file' multiple type="file" onChange={handleFileChange} />
+            <input className='p-3 border-2 rounded-lg' id='file' multiple type="file" onChange={handleFileChange} required />
             <select className='p-3 border' name="" id="category" onChange={handleCateChange} value={cate}>
                 {category.map((item) => (
                     <>
-                        <option className='text-black rounded-md' value={item.name}>{item.name}</option>
+                        <option className='text-black rounded-md' value={item.id}>{item.name}</option>
                     </>
                 ))}
             </select>
-            <button className='p-3 w-[120px] bg-green-400 text-white self-end border rounded-md' onClick={handleSubmit}>
-                Add product
-            </button>
+            {(name === '' || price === '' || des === '') ?
+                <button className='p-3 w-[120px] bg-gray-400 text-white self-end border rounded-md' disabled>
+                    Add product
+                </button>
+                :
+                <button className='p-3 w-[120px] bg-green-400 text-white self-end border rounded-md' onClick={handleSubmit}>
+                    Add product
+                </button>
+            }
         </div>
     )
 }
