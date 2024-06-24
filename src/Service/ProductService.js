@@ -66,6 +66,29 @@ const addProduct = async (name, price, des, cate, imgs) =>{
     }
 }
 
+const updateProduct = async (name, price, des, cate, id) => {
+    try {
+        const res = await axios.put(`/products/${id}`, 
+        {
+            "name": name,
+            "price": price,
+            "description": des,
+            "category": {
+                "id": cate
+            }
+        }, 
+        {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log('Product updated successfully', res.data);
+        return res;
+    } catch (error) {
+        console.error('Error updating product', error);
+    }
+}
+
 const deleteProduct = async (id) =>{
     try {
         const response = await axios.delete(`products/${id}`)
@@ -79,4 +102,4 @@ const deleteProduct = async (id) =>{
 
 
 
-export {getAllProduct, deleteProduct, addProduct, getDetail};
+export {getAllProduct, deleteProduct, addProduct, getDetail, updateProduct};
